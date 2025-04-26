@@ -1,0 +1,25 @@
+[application]
+out_dir = "docs"
+
+[web.app]
+base_path = "your_repo"
+
+# HTML title tag content
+title = "algtars"
+
+# include `assets` in web platform
+[web.resource]
+
+# Additional CSS style files
+style = []
+
+# Additional JavaScript files
+script = []
+
+[web.resource.dev]
+
+# Javascript code file
+# serve: [dev-server] only
+script = []
+
+
