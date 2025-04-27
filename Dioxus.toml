@@ -1,8 +1,6 @@
 [application]
-out_dir = "docs"
 
 [web.app]
-base_path = "your_repo"
 
 # HTML title tag content
 title = "algtars"

@@ -1,5 +1,7 @@
-use dioxus::prelude::*;
-// use dioxus_time::
+use std::time::Duration;
+
+use dioxus::{logger::tracing, prelude::*};
+use dioxus_sdk::utils::timing::use_interval;
 
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Hash, Default, Debug)]
 pub struct DisplayTime {
@@ -30,9 +32,52 @@ impl DisplayTime {
     }
 }
 
-#[component]
-pub fn Timer() -> Element {
-    rsx! {
 
+#[component]
+pub fn Timer(mut final_time: Signal<DisplayTime>) -> Element {
+    let mut timer_time = use_signal(|| DisplayTime::new());
+    let mut start_time = use_signal(|| 0i64);
+    let mut running = use_signal(|| false);
+    let mut interval = use_interval(Duration::from_millis(10), {
+        move || match running() {
+            true => timer_time.set(DisplayTime {
+                millis: chrono::Utc::now().timestamp_millis() - start_time(),
+            }),
+            false => (),
+        }
+    });
+    
+
+    let toggle = {
+        move |event: Event<MouseData>| {
+            event.prevent_default();
+            tracing::debug!("called toggle");
+            match running() {
+                true => {
+                    let done_time = DisplayTime {
+                        millis: chrono::Utc::now().timestamp_millis() - start_time(),
+                    };
+                    timer_time.set(done_time);
+                    final_time.set(done_time);
+                    running.set(false);
+                }
+                false => {
+                    start_time.set(chrono::Utc::now().timestamp_millis());
+                    timer_time.set(DisplayTime::new());
+                    running.set(true);
+                }
+            }
+        }
+    };
+
+    rsx! {
+        div {
+            class: "cursor-pointer place-content-center place-items-center flex h-50 bg-blue-300 text-white rounded-xl select-none",
+            onclick: toggle,
+            p {
+                class: "text-4xl",
+                "{timer_time().display()}"
+            }
+        }
     }
 }
