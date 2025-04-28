@@ -4,3 +4,6 @@
 
 mod timer;
 pub use timer::{DisplayTime, Timer};
+
+mod theme;
+pub use theme::Theme;

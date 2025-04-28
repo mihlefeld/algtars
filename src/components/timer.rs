@@ -2,6 +2,7 @@ use std::time::Duration;
 
 use dioxus::{logger::tracing, prelude::*};
 use dioxus_sdk::utils::timing::use_interval;
+use super::Theme;
 
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Hash, Default, Debug)]
 pub struct DisplayTime {
@@ -34,11 +35,11 @@ impl DisplayTime {
 
 
 #[component]
-pub fn Timer(mut final_time: Signal<DisplayTime>) -> Element {
+pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>) -> Element {
     let mut timer_time = use_signal(|| DisplayTime::new());
     let mut start_time = use_signal(|| 0i64);
     let mut running = use_signal(|| false);
-    let mut interval = use_interval(Duration::from_millis(10), {
+    use_interval(Duration::from_millis(10), {
         move || match running() {
             true => timer_time.set(DisplayTime {
                 millis: chrono::Utc::now().timestamp_millis() - start_time(),
@@ -47,6 +48,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>) -> Element {
         }
     });
     
+    let theme = use_context::<Theme>();
 
     let toggle = {
         move |event: Event<MouseData>| {
@@ -72,7 +74,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>) -> Element {
 
     rsx! {
         div {
-            class: "cursor-pointer place-content-center place-items-center flex h-50 bg-blue-300 text-white rounded-xl select-none",
+            class: "cursor-pointer place-content-center place-items-center flex {theme.primary} {theme.primary_hover} rounded-xl select-none {class}",
             onclick: toggle,
             p {
                 class: "text-4xl",

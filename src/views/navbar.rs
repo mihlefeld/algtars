@@ -1,4 +1,5 @@
 use crate::Route;
+use crate::components::Theme;
 use dioxus::prelude::*;
 
 
@@ -9,18 +10,19 @@ use dioxus::prelude::*;
 /// routes will be rendered under the outlet inside this component
 #[component]
 pub fn Navbar() -> Element {
-    let classes = "bg-blue-300 hover:bg-blue-200 p-1 rounded-lg";
+    let theme = use_context::<Theme>();
+    // let classes = use_memo(move || "{theme.background} {theme.secondary} {theme.secondary_hover} p-1 rounded-lg");
     rsx! {
         div {
-            class: "w-full flex gap-3 justify-center sticky top-2",
+            class: "w-full flex gap-3 justify-end sticky p-2 top-0 text-center shadow-lg {theme.background}",
             id: "navbar",
             Link {
-                class: "{classes}",
-                to: Route::Home {},
-                "Home"
+                class: "{theme.secondary} {theme.secondary_hover} p-2 rounded-lg w-30 ",
+                to: Route::Practice {},
+                "Practice"
             },
             Link {
-                class: "{classes}",
+                class: "{theme.secondary} {theme.secondary_hover} p-2 rounded-lg w-30 ",
                 to: Route::Selection {},
                 "Selection"
             }

@@ -2,7 +2,7 @@
 // need dioxus
 use dioxus::prelude::*;
 
-use views::{Home, Selection, Navbar};
+use views::{Practice, Selection, Navbar};
 
 /// Define a components module that contains all shared components for our app.
 mod components;
@@ -23,7 +23,7 @@ enum Route {
         // The route attribute defines the URL pattern that a specific route matches. If that pattern matches the URL,
         // the component for that route will be rendered. The component name that is rendered defaults to the variant name.
         #[route("/")]
-        Home {},
+        Practice {},
         #[route("/selection")]
         Selection {},
         // The route attribute can include dynamic parameters that implement [`std::str::FromStr`] and [`std::fmt::Display`] with the `:` syntax.
@@ -49,6 +49,17 @@ fn main() {
 /// Components should be annotated with `#[component]` to support props, better error messages, and autocomplete
 #[component]
 fn App() -> Element {
+    use_context_provider(|| components::Theme{
+        dark: true, 
+        text: "text-slate-950 dark:text-slate-50".to_string(),
+        background: "bg-slate-200 dark:bg-slate-800".to_string(),
+        primary: "bg-indigo-300 dark:bg-indigo-950".to_string(),
+        primary_hover: "hover:bg-indigo-200 dark:hover:bg-indigo-900".to_string(),
+        secondary: "bg-red-300 dark:bg-red-800".to_string(),
+        secondary_hover: "hover:bg-red-200 dark:hover:bg-red-900".to_string()
+    });
+    let theme = use_context::<components::Theme>();
+    let dark = if theme.dark {"dark".to_string()} else {"".to_string()};
     // The `rsx!` macro lets us define HTML inside of rust. It expands to an Element with all of our HTML inside.
     rsx! {
         // In addition to element and text (which we will see later), rsx can contain other components. In this case,
@@ -60,8 +71,11 @@ fn App() -> Element {
         // The router component renders the route enum we defined above. It will handle synchronization of the URL and render
         // the layouts and components for the active route.
         div {
-            class: "flex flex-col gap-2", 
-            Router::<Route> {}
+            class: "dark",
+            div {
+                class: "flex flex-col min-h-screen {dark} {theme.text} {theme.background} gap-4",
+                Router::<Route> {}
+            }
         }
     }
 }

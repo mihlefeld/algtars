@@ -1,11 +1,10 @@
-use std::{
-    collections::{BTreeMap, HashMap},
-    str::FromStr,
-};
+use std::collections::{BTreeMap, HashMap};
 
-use dioxus::{html::option::selected, logger::tracing, prelude::*};
+use dioxus::{logger::tracing, prelude::*};
 use wasm_bindgen::JsValue;
 use web_sys::{js_sys::Array, Blob, BlobPropertyBag, Url};
+
+use crate::components;
 
 // grid-cols-1
 // grid-cols-2
@@ -19,23 +18,18 @@ use web_sys::{js_sys::Array, Blob, BlobPropertyBag, Url};
 // col-span-4
 // col-span-5
 // col-span-6
-
-pub fn get_bg_hover(x: bool) -> (String, String) {
-    let bg = if x { "bg-blue-300" } else { "bg-red-300" };
-    let hover = if x {
-        "hover:bg-blue-200"
-    } else {
-        "hover:bg-red-200"
-    };
-    (bg.to_string(), hover.to_string())
-}
+// dark
 
 #[component]
 pub fn Case(selections: Signal<HashMap<String, bool>>, url: String) -> Element {
-    let (bg, hover) = get_bg_hover(*selections().get(&url).unwrap());
+    let theme = use_context::<components::Theme>();
+    let bg_hover = use_memo({ 
+        let url = url.clone();
+        move || theme.selected_style(*selections.read().get(&url.clone()).unwrap())
+    });
     rsx! {
         div {
-            class: "w-40 {bg} rounded-lg {hover}",
+            class: "w-40 rounded-lg cursor-pointer {bg_hover}",
             onclick: {
                 let url_cloned = url.clone();
                 move |_| {
@@ -52,8 +46,8 @@ pub fn Case(selections: Signal<HashMap<String, bool>>, url: String) -> Element {
 
 #[derive(PartialEq, Props, Clone)]
 struct GroupProps {
-    name: String,
-    urls: Vec<String>,
+    name: ReadOnlySignal<String>,
+    urls: ReadOnlySignal<Vec<String>>,
 }
 
 #[component]
@@ -66,14 +60,14 @@ pub fn Group(props: GroupProps) -> Element {
             .collect::<HashMap<String, bool>>()
     });
     let group_selected = use_memo(move || selections().iter().map(|(_, v)| v).all(|v| *v));
-    let (bg, hover) = get_bg_hover(group_selected());
-    let cols = format!("grid-cols-{}", if urls.len() <= 6 { urls.len() } else { 6 });
-    let col_span = format!("col-span-{}", if urls.len() <= 6 { urls.len() } else { 6 });
+    let theme = use_context::<components::Theme>();
+    let bg_hover = use_memo(move || {theme.selected_style(group_selected())});
+    let cols = urls.with(|urls| format!("grid-cols-{}", if urls.len() <= 6 { urls.len() } else { 6 }));
+    let col_span = urls.with(move |urls| format!("col-span-{}", if urls.len() <= 6 { urls.len() } else { 6 }));
     rsx! {
         div {
             class: "grid {cols} gap-1 w-fit",
             div {
-                class: "{col_span}",
                 onclick: {
                     move |_| {
                         for (_, val) in selections.write().iter_mut() {
@@ -81,13 +75,13 @@ pub fn Group(props: GroupProps) -> Element {
                         }
                     }
                 },
-                class: "{bg} {hover} rounded-lg p-2",
+                class: "rounded-lg p-2 cursor-pointer {bg_hover} {col_span}",
                 h2 {
                     class: "font-extrabold",
                     "{name}"
                 },
             }
-            for url in urls {
+            for url in urls() {
                 Case {
                     selections: selections,
                     url:  url
@@ -105,7 +99,7 @@ pub fn Selection() -> Element {
             include_str!("../../assets/combined.json"),
         )
         .unwrap_or_else(|_| {
-            tracing::debug!("Failed to load hashmap");
+            tracing::debug!("Failed to load hashmap"); 
             BTreeMap::new()
         })
         .iter()
@@ -139,8 +133,8 @@ pub fn Selection() -> Element {
                     })
                     .collect::<Vec<String>>();
                 GroupProps {
-                    name: name.to_string(),
-                    urls,
+                    name: ReadOnlySignal::new(Signal::new(name.to_string())),
+                    urls: ReadOnlySignal::new(Signal::new(urls)),
                 }
             })
             .collect::<Vec<GroupProps>>();
@@ -155,16 +149,14 @@ pub fn Selection() -> Element {
 
     rsx! {
         div {
-            class: "h-grow justify-center flex",
-            div {
-                class: "flex flex-col w-fit gap-1",
-                for group in groups {
-                    Group {
-                        name: group.name,
-                        urls: group.urls
-                    }
+            class: "flex flex-col w-fit gap-1 place-self-center",
+            for group in groups {
+                Group {
+                    name: group.name,
+                    urls: group.urls
                 }
             }
         }
+    
     }
 }
