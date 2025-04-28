@@ -1,6 +1,8 @@
 [application]
+out_dir = "dist"
 
 [web.app]
+base_path = "algtars"
 
 # HTML title tag content
 title = "algtars"
