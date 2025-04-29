@@ -7,3 +7,6 @@ pub use timer::{DisplayTime, Timer};
 
 mod theme;
 pub use theme::Theme;
+
+mod link;
+pub use link::ALink;

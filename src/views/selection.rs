@@ -6,6 +6,43 @@ use web_sys::{js_sys::Array, Blob, BlobPropertyBag, Url};
 
 use crate::components;
 
+
+pub struct SelectionDataJson {
+    algs: String,
+    algsets: String,
+    images: String,
+    groups: String,
+    scrambles: String,
+    
+}
+
+pub fn get_selection_data(trainer: &str) -> Option<SelectionDataJson> {
+    match trainer {
+        "Megaminx-PLL" => Some(SelectionDataJson { 
+            algs: include_str!("../../assets/Megaminx/PLL/algs_info.json").to_string(), 
+            algsets: include_str!("../../assets/Megaminx/PLL/algsets_info.json").to_string(), 
+            images: include_str!("../../assets/Megaminx/PLL/combined.json").to_string(), 
+            groups: include_str!("../../assets/Megaminx/PLL/groups_info.json").to_string(), 
+            scrambles: include_str!("../../assets/Megaminx/PLL/selected_algsets.json").to_string() 
+        }),
+        "Megaminx-OLL" => Some(SelectionDataJson { 
+            algs: include_str!("../../assets/Megaminx/OLL/algs_info.json").to_string(), 
+            algsets: include_str!("../../assets/Megaminx/OLL/algsets_info.json").to_string(), 
+            images: include_str!("../../assets/Megaminx/OLL/combined.json").to_string(), 
+            groups: include_str!("../../assets/Megaminx/OLL/groups_info.json").to_string(), 
+            scrambles: include_str!("../../assets/Megaminx/OLL/selected_algsets.json").to_string() 
+        }),
+        "3x3-ZBLL" => Some(SelectionDataJson { 
+            algs: include_str!("../../assets/3x3/ZBLL/algs_info.json").to_string(), 
+            algsets: include_str!("../../assets/3x3/ZBLL/algsets_info.json").to_string(), 
+            images: include_str!("../../assets/3x3/ZBLL/combined.json").to_string(), 
+            groups: include_str!("../../assets/3x3/ZBLL/groups_info.json").to_string(), 
+            scrambles: include_str!("../../assets/3x3/ZBLL/selected_algsets.json").to_string() 
+        }),
+        _ => None
+    }
+}
+
 // grid-cols-1
 // grid-cols-2
 // grid-cols-3
@@ -66,7 +103,7 @@ pub fn Group(props: GroupProps) -> Element {
     let col_span = urls.with(move |urls| format!("col-span-{}", if urls.len() <= 6 { urls.len() } else { 6 }));
     rsx! {
         div {
-            class: "grid {cols} gap-1 w-fit",
+            class: "grid {cols} gap-1 w-fit pt-2",
             div {
                 onclick: {
                     move |_| {
@@ -93,10 +130,11 @@ pub fn Group(props: GroupProps) -> Element {
 
 // The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]
-pub fn Selection() -> Element {
+pub fn Selection(trainer: String) -> Element {
     let (groups, blob_urls) = use_hook(|| {
+        let SelectionDataJson {algs, algsets, images, groups, scrambles} = get_selection_data(trainer.as_str()).unwrap();
         let blob_urls: HashMap<String, String> = serde_json::from_str::<BTreeMap<String, String>>(
-            include_str!("../../assets/combined.json"),
+            images.as_str(),
         )
         .unwrap_or_else(|_| {
             tracing::debug!("Failed to load hashmap"); 
@@ -115,7 +153,7 @@ pub fn Selection() -> Element {
         })
         .collect();
 
-        let groups = serde_json::from_str(include_str!("../../assets/groups_info.json"))
+        let groups = serde_json::from_str(groups.as_str())
             .unwrap_or_else(|_| {
                 tracing::debug!("Failed to load groups");
                 BTreeMap::<String, Vec<i32>>::new()

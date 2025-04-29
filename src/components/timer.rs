@@ -74,7 +74,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>)
 
     rsx! {
         div {
-            class: "cursor-pointer place-content-center place-items-center flex {theme.primary} {theme.primary_hover} rounded-xl select-none {class}",
+            class: "cursor-pointer place-content-center place-items-center flex select-none {class}",
             onclick: toggle,
             p {
                 class: "text-4xl",

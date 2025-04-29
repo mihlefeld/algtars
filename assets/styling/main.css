@@ -1,4 +1,13 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100vh;
+    --text: oklch(99% 0 91);
+    --background: oklch(33% 0 0);
+    --background-darker: oklch(23% 0 0);
+    --primary: oklch(82% 0.07 135);
+    --primary-hover: oklch(72% 0.07 135);
+    --secondary: oklch(69% 0.09 98);
+    --secondary-hover: oklch(59% 0.09 98);
+    --accent: oklch(91% 0.16 98);
+    --accent-hover: oklch(81% 0.16 98);
 }

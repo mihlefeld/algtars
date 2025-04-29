@@ -2,7 +2,7 @@
 // need dioxus
 use dioxus::prelude::*;
 
-use views::{Practice, Selection, Navbar};
+use views::{Practice, Selection, Navbar, LinkTree};
 
 /// Define a components module that contains all shared components for our app.
 mod components;
@@ -17,17 +17,13 @@ mod views;
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
 enum Route {
-    // The layout attribute defines a wrapper for all routes under the layout. Layouts are great for wrapping
-    // many routes with a common UI like a navbar.
     #[layout(Navbar)]
-        // The route attribute defines the URL pattern that a specific route matches. If that pattern matches the URL,
-        // the component for that route will be rendered. The component name that is rendered defaults to the variant name.
         #[route("/")]
+        LinkTree {},
+        #[route("/practice")]
         Practice {},
-        #[route("/selection")]
-        Selection {},
-        // The route attribute can include dynamic parameters that implement [`std::str::FromStr`] and [`std::fmt::Display`] with the `:` syntax.
-        // In this case, id will match any integer like `/blog/123` or `/blog/-456`.
+        #[route("/:trainer")]
+        Selection { trainer: String },
 }
 
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.
@@ -36,6 +32,8 @@ const FAVICON: Asset = asset!("/assets/favicon.ico");
 // The asset macro also minifies some assets like CSS and JS to make bundled smaller
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
+
+
 
 fn main() {
     // The `launch` function is the main entry point for a dioxus app. It takes a component and renders it with the platform feature
@@ -51,12 +49,15 @@ fn main() {
 fn App() -> Element {
     use_context_provider(|| components::Theme{
         dark: true, 
-        text: "text-slate-950 dark:text-slate-50".to_string(),
-        background: "bg-slate-200 dark:bg-slate-800".to_string(),
-        primary: "bg-indigo-300 dark:bg-indigo-950".to_string(),
-        primary_hover: "hover:bg-indigo-200 dark:hover:bg-indigo-900".to_string(),
-        secondary: "bg-red-300 dark:bg-red-800".to_string(),
-        secondary_hover: "hover:bg-red-200 dark:hover:bg-red-900".to_string()
+        text: "text-[var(--text)]".to_string(),
+        background: "bg-[var(--background)]".to_string(),
+        accent_background: "bg-[var(--background-darker)]".to_string(),
+        primary: "bg-[var(--primary)]".to_string(),
+        primary_hover: "hover:bg-[var(--primary-hover)]".to_string(),
+        secondary: "bg-[var(--secondary)]".to_string(),
+        secondary_hover: "hover:bg-[var(--secondary-hover)]".to_string(),
+        accent: "bg-[var(--accent)]".to_string(),
+        accent_hover: "bg-[var(--accent-hover)]".to_string(),
     });
     let theme = use_context::<components::Theme>();
     let dark = if theme.dark {"dark".to_string()} else {"".to_string()};
@@ -73,7 +74,7 @@ fn App() -> Element {
         div {
             class: "dark",
             div {
-                class: "flex flex-col min-h-screen {dark} {theme.text} {theme.background} gap-4",
+                class: "flex flex-col min-h-screen {dark} {theme.text} {theme.accent_background} gap-4",
                 Router::<Route> {}
             }
         }
