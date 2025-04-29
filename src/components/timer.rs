@@ -48,7 +48,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>)
         }
     });
     
-    let theme = use_context::<Theme>();
+    let _theme = use_context::<Theme>();
 
     let toggle = {
         move |event: Event<MouseData>| {

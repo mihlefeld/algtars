@@ -3,7 +3,7 @@ use crate::{components::{ALink, Theme}, Route};
 
 #[component]
 pub fn LinkTree() -> Element {
-    let theme = use_context::<Theme>();
+    let _theme = use_context::<Theme>();
     rsx! {
         div {
             class: "flex flex-col gap-2 self-center",

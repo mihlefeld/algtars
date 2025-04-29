@@ -8,36 +8,35 @@ use crate::components;
 
 
 pub struct SelectionDataJson {
-    algs: String,
-    algsets: String,
+    _algs: String,
+    _algsets: String,
     images: String,
     groups: String,
-    scrambles: String,
-    
+    _scrambles: String,
 }
 
 pub fn get_selection_data(trainer: &str) -> Option<SelectionDataJson> {
     match trainer {
         "Megaminx-PLL" => Some(SelectionDataJson { 
-            algs: include_str!("../../assets/Megaminx/PLL/algs_info.json").to_string(), 
-            algsets: include_str!("../../assets/Megaminx/PLL/algsets_info.json").to_string(), 
+            _algs: include_str!("../../assets/Megaminx/PLL/algs_info.json").to_string(), 
+            _algsets: include_str!("../../assets/Megaminx/PLL/algsets_info.json").to_string(), 
             images: include_str!("../../assets/Megaminx/PLL/combined.json").to_string(), 
             groups: include_str!("../../assets/Megaminx/PLL/groups_info.json").to_string(), 
-            scrambles: include_str!("../../assets/Megaminx/PLL/selected_algsets.json").to_string() 
+            _scrambles: include_str!("../../assets/Megaminx/PLL/selected_algsets.json").to_string() 
         }),
         "Megaminx-OLL" => Some(SelectionDataJson { 
-            algs: include_str!("../../assets/Megaminx/OLL/algs_info.json").to_string(), 
-            algsets: include_str!("../../assets/Megaminx/OLL/algsets_info.json").to_string(), 
+            _algs: include_str!("../../assets/Megaminx/OLL/algs_info.json").to_string(), 
+            _algsets: include_str!("../../assets/Megaminx/OLL/algsets_info.json").to_string(), 
             images: include_str!("../../assets/Megaminx/OLL/combined.json").to_string(), 
             groups: include_str!("../../assets/Megaminx/OLL/groups_info.json").to_string(), 
-            scrambles: include_str!("../../assets/Megaminx/OLL/selected_algsets.json").to_string() 
+            _scrambles: include_str!("../../assets/Megaminx/OLL/selected_algsets.json").to_string() 
         }),
         "3x3-ZBLL" => Some(SelectionDataJson { 
-            algs: include_str!("../../assets/3x3/ZBLL/algs_info.json").to_string(), 
-            algsets: include_str!("../../assets/3x3/ZBLL/algsets_info.json").to_string(), 
+            _algs: include_str!("../../assets/3x3/ZBLL/algs_info.json").to_string(), 
+            _algsets: include_str!("../../assets/3x3/ZBLL/algsets_info.json").to_string(), 
             images: include_str!("../../assets/3x3/ZBLL/combined.json").to_string(), 
             groups: include_str!("../../assets/3x3/ZBLL/groups_info.json").to_string(), 
-            scrambles: include_str!("../../assets/3x3/ZBLL/selected_algsets.json").to_string() 
+            _scrambles: include_str!("../../assets/3x3/ZBLL/selected_algsets.json").to_string() 
         }),
         _ => None
     }
@@ -132,7 +131,7 @@ pub fn Group(props: GroupProps) -> Element {
 #[component]
 pub fn Selection(trainer: String) -> Element {
     let (groups, blob_urls) = use_hook(|| {
-        let SelectionDataJson {algs, algsets, images, groups, scrambles} = get_selection_data(trainer.as_str()).unwrap();
+        let SelectionDataJson {_algs: _, _algsets: _, images, groups, _scrambles: _} = get_selection_data(trainer.as_str()).unwrap();
         let blob_urls: HashMap<String, String> = serde_json::from_str::<BTreeMap<String, String>>(
             images.as_str(),
         )
