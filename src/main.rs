@@ -2,7 +2,7 @@
 // need dioxus
 use dioxus::prelude::*;
 
-use views::{Practice, Selection, Navbar, LinkTree};
+use views::{Practice, SelectionRoute, Navbar, LinkTree};
 
 /// Define a components module that contains all shared components for our app.
 mod components;
@@ -23,7 +23,7 @@ enum Route {
         #[route("/practice")]
         Practice {},
         #[route("/:trainer")]
-        Selection { trainer: String },
+        SelectionRoute { trainer: String },
 }
 
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.
@@ -58,9 +58,11 @@ fn App() -> Element {
         secondary_hover: "hover:bg-[var(--secondary-hover)]".to_string(),
         accent: "bg-[var(--accent)]".to_string(),
         accent_hover: "bg-[var(--accent-hover)]".to_string(),
+        dark_text: "text-[var(--background)]".to_string(),
     });
     let theme = use_context::<components::Theme>();
     let dark = if theme.dark {"dark".to_string()} else {"".to_string()};
+    
     // The `rsx!` macro lets us define HTML inside of rust. It expands to an Element with all of our HTML inside.
     rsx! {
         // In addition to element and text (which we will see later), rsx can contain other components. In this case,
@@ -72,11 +74,9 @@ fn App() -> Element {
         // The router component renders the route enum we defined above. It will handle synchronization of the URL and render
         // the layouts and components for the active route.
         div {
-            class: "dark",
-            div {
-                class: "flex flex-col min-h-screen {dark} {theme.text} {theme.accent_background} gap-4",
-                Router::<Route> {}
-            }
+            class: "min-h-screen {dark} {theme.text} {theme.accent_background}",
+            Router::<Route> {}
         }
+        
     }
 }

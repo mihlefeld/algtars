@@ -17,6 +17,27 @@ pub struct SelectionDataJson {
 
 pub fn get_selection_data(trainer: &str) -> Option<SelectionDataJson> {
     match trainer {
+        "2x2-EG" => Some(SelectionDataJson { 
+            _algs: include_str!("../../assets/2x2/EG/algs_info.json").to_string(), 
+            _algsets: include_str!("../../assets/2x2/EG/algsets_info.json").to_string(), 
+            images: include_str!("../../assets/2x2/EG/combined.json").to_string(), 
+            groups: include_str!("../../assets/2x2/EG/groups_info.json").to_string(), 
+            _scrambles: include_str!("../../assets/2x2/EG/selected_algsets.json").to_string() 
+        }),
+        "2x2-FH" => Some(SelectionDataJson { 
+            _algs: include_str!("../../assets/2x2/FH/algs_info.json").to_string(), 
+            _algsets: include_str!("../../assets/2x2/FH/algsets_info.json").to_string(), 
+            images: include_str!("../../assets/2x2/FH/combined.json").to_string(), 
+            groups: include_str!("../../assets/2x2/FH/groups_info.json").to_string(), 
+            _scrambles: include_str!("../../assets/2x2/FH/selected_algsets.json").to_string() 
+        }),
+        "2x2-LS" => Some(SelectionDataJson { 
+            _algs: include_str!("../../assets/2x2/LS/algs_info.json").to_string(), 
+            _algsets: include_str!("../../assets/2x2/LS/algsets_info.json").to_string(), 
+            images: include_str!("../../assets/2x2/LS/combined.json").to_string(), 
+            groups: include_str!("../../assets/2x2/LS/groups_info.json").to_string(), 
+            _scrambles: include_str!("../../assets/2x2/LS/selected_algsets.json").to_string() 
+        }),
         "Megaminx-PLL" => Some(SelectionDataJson { 
             _algs: include_str!("../../assets/Megaminx/PLL/algs_info.json").to_string(), 
             _algsets: include_str!("../../assets/Megaminx/PLL/algsets_info.json").to_string(), 
@@ -54,6 +75,18 @@ pub fn get_selection_data(trainer: &str) -> Option<SelectionDataJson> {
 // col-span-4
 // col-span-5
 // col-span-6
+// lg:grid-cols-1
+// lg:grid-cols-2
+// lg:grid-cols-3
+// lg:grid-cols-4
+// lg:grid-cols-5
+// lg:grid-cols-6
+// lg:col-span-1
+// lg:col-span-2
+// lg:col-span-3
+// lg:col-span-4
+// lg:col-span-5
+// lg:col-span-6
 // dark
 
 #[component]
@@ -65,7 +98,7 @@ pub fn Case(selections: Signal<HashMap<String, bool>>, url: String) -> Element {
     });
     rsx! {
         div {
-            class: "w-40 rounded-lg cursor-pointer {bg_hover}",
+            class: "w-29 rounded-lg cursor-pointer p-1 {bg_hover}",
             onclick: {
                 let url_cloned = url.clone();
                 move |_| {
@@ -88,6 +121,8 @@ struct GroupProps {
 
 #[component]
 pub fn Group(props: GroupProps) -> Element {
+    let large_bp = 6usize;
+    let small_bp = 4usize;
     let name = props.name;
     let urls = props.urls;
     let mut selections = use_signal(|| {
@@ -98,11 +133,13 @@ pub fn Group(props: GroupProps) -> Element {
     let group_selected = use_memo(move || selections().iter().map(|(_, v)| v).all(|v| *v));
     let theme = use_context::<components::Theme>();
     let bg_hover = use_memo(move || {theme.selected_style(group_selected())});
-    let cols = urls.with(|urls| format!("grid-cols-{}", if urls.len() <= 6 { urls.len() } else { 6 }));
-    let col_span = urls.with(move |urls| format!("col-span-{}", if urls.len() <= 6 { urls.len() } else { 6 }));
+
+    let col_format = |prefix: &str, pb: usize| urls.with(|urls| format!("{}-{}", prefix, if urls.len() <= pb { urls.len() } else { pb }));
+    let grid_cols = format!("{} {} {}", col_format("grid-cols", small_bp), col_format("md:grid-cols", large_bp), col_format("lg:grid-cols", large_bp));
+    let col_span = format!("{} {}", col_format("col-span", small_bp), col_format("lg:col-span", large_bp));
     rsx! {
         div {
-            class: "grid {cols} gap-1 w-fit pt-2",
+            class: "grid {grid_cols} gap-1 w-fit",
             div {
                 onclick: {
                     move |_| {
@@ -113,7 +150,7 @@ pub fn Group(props: GroupProps) -> Element {
                 },
                 class: "rounded-lg p-2 cursor-pointer {bg_hover} {col_span}",
                 h2 {
-                    class: "font-extrabold",
+                    class: "font-extrabold text-2xl",
                     "{name}"
                 },
             }
@@ -195,5 +232,14 @@ pub fn Selection(trainer: String) -> Element {
             }
         }
     
+    }
+}
+
+#[component]
+pub fn SelectionRoute(trainer: ReadOnlySignal<String>) -> Element {
+    rsx! {
+        for i in std::iter::once(trainer) {
+            Selection { trainer: trainer, key: "{i}" }
+        }
     }
 }

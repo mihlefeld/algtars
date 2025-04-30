@@ -10,12 +10,16 @@ pub struct Theme {
     pub secondary_hover: String,
     pub accent: String,
     pub accent_hover: String,
+    pub dark_text: String,
 }
 
 impl Theme {
     pub fn selected_style(&self, selected: bool) -> String {
         let bg = if selected { &self.accent } else { &self.secondary };
         let hover = if selected { &self.accent_hover } else { &self.secondary_hover };
-        format!("{} {}", bg, hover).to_string()
+        format!("{} {} {}", bg, hover, &self.dark_text).to_string()
+    }
+    pub fn button(&self) -> String {
+        format!("{} {} cursor-pointer rounded-xl p-2 hover:shadow-lg/80 hover:scale-[1.03] {}", &self.primary, &self.primary_hover, &self.dark_text)
     }
 }

@@ -15,7 +15,7 @@ mod navbar;
 pub use navbar::Navbar;
 
 mod selection;
-pub use selection::Selection;
+pub use selection::SelectionRoute;
 
 mod link_tree;
 pub use link_tree::LinkTree;

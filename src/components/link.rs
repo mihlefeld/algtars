@@ -7,7 +7,7 @@ pub fn ALink(to: Route, name: &'static str) -> Element {
     let theme = use_context::<Theme>();
     rsx! {
         Link {
-            class: "{theme.secondary} {theme.secondary_hover} p-2 rounded-lg w-30 ",
+            class: "w-50 font-bold {theme.button()}",
             to: to,
             "{name}"
         }
