@@ -23,7 +23,7 @@ jobs:
   
       - name: Build Project 🎁
         shell: bash
-        run: dx bundle
+        run: dx bundle -r && cp ./docs/public/index.html ./docs/public/404.html
   
       - name: Deploy Project 🚀
         uses: JamesIves/github-pages-deploy-action@v4.4.1
