@@ -51,8 +51,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>)
     let _theme = use_context::<Theme>();
 
     let toggle = {
-        move |event: Event<MouseData>| {
-            event.prevent_default();
+        move || {
             tracing::debug!("called toggle");
             match running() {
                 true => {
@@ -71,11 +70,19 @@ pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>)
             }
         }
     };
-
+    
     rsx! {
         div {
+            tabindex: 0,
             class: "cursor-pointer place-content-center place-items-center flex select-none {class}",
-            onclick: toggle,
+            onclick: move |m| {m.prevent_default(); toggle.clone()();},
+            onkeypress: move |k| match k.code() {
+                Code::Space => {
+                    k.prevent_default();
+                    toggle.clone()()
+                },
+                _ => ()
+            },
             p {
                 class: "text-4xl",
                 "{timer_time().display()}"

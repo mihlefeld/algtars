@@ -1,24 +1,36 @@
+use crate::views::TRAINERS;
+use crate::{
+    components::{ALink, Theme},
+    Route,
+};
 use dioxus::prelude::*;
-use crate::{components::{ALink, Theme}, Route};
 
 #[component]
-pub fn LinkTree() -> Element {
+fn SelectionLink(trainer: &'static str) -> Element {
+    rsx! {
+            ALink {
+                to: Route::SelectionRoute { trainer: trainer.to_string() },
+                name: trainer
+            }
+
+    }
+}
+#[component]
+pub fn LinkTree(onclick: Option<EventHandler<MouseEvent>>) -> Element {
     let _theme = use_context::<Theme>();
     rsx! {
         div {
-            class: "flex flex-col gap-2 self-center",
-            ALink { 
-                to: Route::SelectionRoute { trainer: "Megaminx-PLL".to_string() },
-                name: "Megaminx-PLL"
-             },
-            ALink { 
-                to: Route::SelectionRoute { trainer: "Megaminx-OLL".to_string() },
-                name: "Megaminx-OLL"
-             },
-            ALink { 
-                to: Route::SelectionRoute { trainer: "3x3-ZBLL".to_string() },
-                name: "3x3-ZBLL"
-             },
+            class: "flex flex-col gap-1",
+            for trainer in TRAINERS {
+                div { 
+                    class: "flex ",
+                    onclick: move |m| {match onclick {
+                        Some(f) => f(m),
+                        None => ()
+                    }},
+                    SelectionLink { trainer, key: "{trainer}" }
+                }
+            }
         }
     }
 }

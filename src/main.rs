@@ -1,6 +1,6 @@
 // The dioxus prelude contains a ton of common items used in dioxus apps. It's a good idea to import wherever you
 // need dioxus
-use dioxus::prelude::*;
+use dioxus::{logger::tracing, prelude::*};
 
 use views::{Practice, SelectionRoute, Navbar, LinkTree};
 

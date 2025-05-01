@@ -8,14 +8,17 @@
 //! The [`Navbar`] component will be rendered on all pages of our app since every page is under the layout. The layout defines
 //! a common wrapper around all child routes.
 
-mod practice;
-pub use practice::Practice;
+mod train;
+pub use train::Practice;
 
 mod navbar;
 pub use navbar::Navbar;
 
-mod selection;
-pub use selection::SelectionRoute;
+mod practice;
+pub use practice::SelectionRoute;
 
 mod link_tree;
 pub use link_tree::LinkTree;
+
+mod selection_data;
+use selection_data::{SelectionDataJson, get_selection_data, TRAINERS};

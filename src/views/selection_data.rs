@@ -1,0 +1,130 @@
+
+
+pub struct SelectionDataJson {
+    pub _algs: String,
+    pub _algsets: String,
+    pub images: String,
+    pub groups: String,
+    pub _scrambles: String,
+}
+
+pub const TRAINERS: [&str; 14] = [
+    "2x2-EG",
+    "2x2-FH",
+    "2x2-LS",
+    "2x2-TCLL",
+    "2x2-TEG",
+    "3x3-CMLL",
+    "3x3-OH-CMLL",
+    "3x3-OH-PLL",
+    "3x3-OH-ZBLL",
+    "3x3-OLL",
+    "3x3-PLL",
+    "3x3-ZBLL",
+    "Megaminx-PLL",
+    "Megaminx-OLL",
+];
+
+pub fn get_selection_data(trainer: &str) -> Option<SelectionDataJson> {
+    match trainer {
+        "2x2-EG" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/2x2/EG/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/2x2/EG/algsets_info.json").to_string(),
+            images: include_str!("../../assets/2x2/EG/combined.json").to_string(),
+            groups: include_str!("../../assets/2x2/EG/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/2x2/EG/selected_algsets.json").to_string(),
+        }),
+        "2x2-FH" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/2x2/FH/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/2x2/FH/algsets_info.json").to_string(),
+            images: include_str!("../../assets/2x2/FH/combined.json").to_string(),
+            groups: include_str!("../../assets/2x2/FH/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/2x2/FH/selected_algsets.json").to_string(),
+        }),
+        "2x2-LS" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/2x2/LS/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/2x2/LS/algsets_info.json").to_string(),
+            images: include_str!("../../assets/2x2/LS/combined.json").to_string(),
+            groups: include_str!("../../assets/2x2/LS/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/2x2/LS/selected_algsets.json").to_string(),
+        }),
+        "2x2-TCLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/2x2/TCLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/2x2/TCLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/2x2/TCLL/combined.json").to_string(),
+            groups: include_str!("../../assets/2x2/TCLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/2x2/TCLL/selected_algsets.json").to_string(),
+        }),
+        "2x2-TEG" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/2x2/TEG/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/2x2/TEG/algsets_info.json").to_string(),
+            images: include_str!("../../assets/2x2/TEG/combined.json").to_string(),
+            groups: include_str!("../../assets/2x2/TEG/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/2x2/TEG/selected_algsets.json").to_string(),
+        }),
+        "3x3-CMLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/3x3/CMLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/3x3/CMLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/3x3/CMLL/combined.json").to_string(),
+            groups: include_str!("../../assets/3x3/CMLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/3x3/CMLL/selected_algsets.json").to_string(),
+        }),
+        "3x3-OH-CMLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/3x3/OH-CMLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/3x3/OH-CMLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/3x3/OH-CMLL/combined.json").to_string(),
+            groups: include_str!("../../assets/3x3/OH-CMLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/3x3/OH-CMLL/selected_algsets.json").to_string(),
+        }),
+        "3x3-OH-PLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/3x3/OH-PLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/3x3/OH-PLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/3x3/OH-PLL/combined.json").to_string(),
+            groups: include_str!("../../assets/3x3/OH-PLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/3x3/OH-PLL/selected_algsets.json").to_string(),
+        }),
+        "3x3-OH-ZBLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/3x3/OH-ZBLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/3x3/OH-ZBLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/3x3/OH-ZBLL/combined.json").to_string(),
+            groups: include_str!("../../assets/3x3/OH-ZBLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/3x3/OH-ZBLL/selected_algsets.json").to_string(),
+        }),
+        "3x3-OLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/3x3/OLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/3x3/OLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/3x3/OLL/combined.json").to_string(),
+            groups: include_str!("../../assets/3x3/OLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/3x3/OLL/selected_algsets.json").to_string(),
+        }),
+        "3x3-PLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/3x3/PLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/3x3/PLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/3x3/PLL/combined.json").to_string(),
+            groups: include_str!("../../assets/3x3/PLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/3x3/PLL/selected_algsets.json").to_string(),
+        }),
+        "3x3-ZBLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/3x3/ZBLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/3x3/ZBLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/3x3/ZBLL/combined.json").to_string(),
+            groups: include_str!("../../assets/3x3/ZBLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/3x3/ZBLL/selected_algsets.json").to_string(),
+        }),
+        "Megaminx-PLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/Megaminx/PLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/Megaminx/PLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/Megaminx/PLL/combined.json").to_string(),
+            groups: include_str!("../../assets/Megaminx/PLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/Megaminx/PLL/selected_algsets.json").to_string(),
+        }),
+        "Megaminx-OLL" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/Megaminx/OLL/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/Megaminx/OLL/algsets_info.json").to_string(),
+            images: include_str!("../../assets/Megaminx/OLL/combined.json").to_string(),
+            groups: include_str!("../../assets/Megaminx/OLL/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/Megaminx/OLL/selected_algsets.json").to_string(),
+        }),
+        _ => None,
+    }
+}

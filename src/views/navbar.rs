@@ -1,17 +1,14 @@
 use crate::Route;
 use crate::components::{Theme, ALink};
-use dioxus::prelude::*;
-    
-    /// The Navbar component that will be rendered on all pages of our app since every page is under the layout.
-    ///
-    ///
-    /// This layout component wraps the UI of [Route::Home] and [Route::Blog] in a common navbar. The contents of the Home and Blog
-    /// routes will be rendered under the outlet inside this component
+use crate::views::LinkTree;
+use dioxus::{logger::tracing,prelude::*};
+
 #[component]
 pub fn Navbar() -> Element {
     let mut visible = use_signal(|| false);
     let theme = use_context::<Theme>();
     let to_back_button = "font-black h-fit";
+    
     // let classes = use_memo(move || "{theme.background} {theme.secondary} {theme.secondary_hover} p-1 rounded-lg");
     rsx! {
         div {
@@ -23,39 +20,9 @@ pub fn Navbar() -> Element {
             },
             if visible() {
                 div {
-                    class: "flex flex-row gap-3 min-h-screen justify-start sticky p-2 top-0 text-center shadow-lg w-fit {theme.background}",
-                    id: "navbar",
-                    div {
-                        class: "flex flex-col gap-1",
-                        ALink {
-                            to: Route::SelectionRoute { trainer: "2x2-EG".to_string() },
-                            name: "2x2-EG"
-                        },
-                        ALink {
-                            to: Route::SelectionRoute { trainer: "2x2-FH".to_string() },
-                            name: "2x2-FH"
-                        },
-                        ALink {
-                            to: Route::SelectionRoute { trainer: "2x2-LS".to_string() },
-                            name: "2x2-LS"
-                        },
-                        ALink {
-                            to: Route::SelectionRoute { trainer: "Megaminx-PLL".to_string() },
-                            name: "Megaminx-PLL"
-                        },
-                        ALink {
-                            to: Route::SelectionRoute { trainer: "Megaminx-OLL".to_string() },
-                            name: "Megaminx-OLL"
-                        },
-                        ALink {
-                            to: Route::SelectionRoute { trainer: "3x3-ZBLL".to_string() },
-                            name: "3x3-ZBLL",
-                        },
-                        ALink {
-                            to: Route::Practice {},
-                            name: "Practice"
-                        },
-                    }
+                    class: "flex flex-row gap-3 h-screen overflow-auto justify-start sticky p-2 top-0 text-center shadow-lg w-fit {theme.background}",
+                    key: "navbar",
+                    LinkTree { onclick: move |_| {tracing::debug!("hide"); visible.set(false)} },
                     button {  
                         class: "{to_back_button} {theme.button()}",
                         onclick: move |_| visible.set(false),
