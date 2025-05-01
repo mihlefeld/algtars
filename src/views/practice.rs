@@ -292,7 +292,7 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
                     h1 {
                         "{trainer}"
                     },
-                    TextLink { to: Route::LinkTree {  }, name: "Back" }
+                    TextLink { to: Route::LandingPage {  }, name: "Back" }
                  },
                 Selection { groups }
             } else {

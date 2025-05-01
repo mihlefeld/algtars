@@ -225,6 +225,9 @@
   .row-span-1 {
     grid-row: span 1 / span 1;
   }
+  .row-span-4 {
+    grid-row: span 4 / span 4;
+  }
   .row-span-8 {
     grid-row: span 8 / span 8;
   }
@@ -309,11 +312,17 @@
   .grid-rows-10 {
     grid-template-rows: repeat(10, minmax(0, 1fr));
   }
+  .grid-rows-11 {
+    grid-template-rows: repeat(11, minmax(0, 1fr));
+  }
   .flex-col {
     flex-direction: column;
   }
   .flex-row {
     flex-direction: row;
+  }
+  .flex-wrap {
+    flex-wrap: wrap;
   }
   .place-content-center {
     place-content: center;
@@ -384,6 +393,9 @@
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
+  }
+  .pt-2 {
+    padding-top: calc(var(--spacing) * 2);
   }
   .text-center {
     text-align: center;

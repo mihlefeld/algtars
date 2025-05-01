@@ -8,21 +8,25 @@ pub struct SelectionDataJson {
     pub _scrambles: String,
 }
 
-pub const TRAINERS: [&str; 14] = [
+pub const TRAINERS: [&str; 18] = [
+    "3x3-OLL",
+    "3x3-PLL",
+    "3x3-ZBLL",
+    "3x3-CMLL",
+    "2x2-TEG",
     "2x2-EG",
     "2x2-FH",
     "2x2-LS",
     "2x2-TCLL",
-    "2x2-TEG",
-    "3x3-CMLL",
     "3x3-OH-CMLL",
     "3x3-OH-PLL",
     "3x3-OH-ZBLL",
-    "3x3-OLL",
-    "3x3-PLL",
-    "3x3-ZBLL",
     "Megaminx-PLL",
     "Megaminx-OLL",
+    "Octaminx-L3T",
+    "Octaminx-TCP",
+    "Pyraminx-L4E",
+    "Skewb-NS2",
 ];
 
 pub fn get_selection_data(trainer: &str) -> Option<SelectionDataJson> {
@@ -124,6 +128,34 @@ pub fn get_selection_data(trainer: &str) -> Option<SelectionDataJson> {
             images: include_str!("../../assets/Megaminx/OLL/combined.json").to_string(),
             groups: include_str!("../../assets/Megaminx/OLL/groups_info.json").to_string(),
             _scrambles: include_str!("../../assets/Megaminx/OLL/selected_algsets.json").to_string(),
+        }),
+        "Octaminx-L3T" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/Octaminx/L3T/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/Octaminx/L3T/algsets_info.json").to_string(),
+            images: include_str!("../../assets/Octaminx/L3T/combined.json").to_string(),
+            groups: include_str!("../../assets/Octaminx/L3T/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/Octaminx/L3T/selected_algsets.json").to_string(),
+        }),
+        "Octaminx-TCP" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/Octaminx/TCP/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/Octaminx/TCP/algsets_info.json").to_string(),
+            images: include_str!("../../assets/Octaminx/TCP/combined.json").to_string(),
+            groups: include_str!("../../assets/Octaminx/TCP/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/Octaminx/TCP/selected_algsets.json").to_string(),
+        }),
+        "Pyraminx-L4E" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/Pyraminx/L4E/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/Pyraminx/L4E/algsets_info.json").to_string(),
+            images: include_str!("../../assets/Pyraminx/L4E/combined.json").to_string(),
+            groups: include_str!("../../assets/Pyraminx/L4E/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/Pyraminx/L4E/selected_algsets.json").to_string(),
+        }),
+        "Skewb-NS2" => Some(SelectionDataJson {
+            _algs: include_str!("../../assets/Skewb/NS2/algs_info.json").to_string(),
+            _algsets: include_str!("../../assets/Skewb/NS2/algsets_info.json").to_string(),
+            images: include_str!("../../assets/Skewb/NS2/combined.json").to_string(),
+            groups: include_str!("../../assets/Skewb/NS2/groups_info.json").to_string(),
+            _scrambles: include_str!("../../assets/Skewb/NS2/selected_algsets.json").to_string(),
         }),
         _ => None,
     }

@@ -2,7 +2,7 @@
 // need dioxus
 use dioxus::{logger::tracing, prelude::*};
 
-use views::{LinkTree, Navbar, PracticeMode, SelectionRoute, SelectionRouteWithMode};
+use views::{LandingPage, Navbar, PracticeMode, SelectionRoute, SelectionRouteWithMode};
 
 /// Define a components module that contains all shared components for our app.
 mod components;
@@ -24,7 +24,7 @@ enum Route {
         SelectionRouteWithMode{trainer: String, mode: PracticeMode},
     #[end_layout]
     #[route("/")]
-    LinkTree{}
+    LandingPage{}
 }
 
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.

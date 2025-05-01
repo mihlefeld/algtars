@@ -9,24 +9,34 @@ pub fn Train() -> Element {
     let final_time = use_signal(|| DisplayTime::new());
     let mut history = use_signal(|| Vec::<DisplayTime>::new());
     use_memo(move || {
-        history.push(final_time())
+        if final_time.read().valid() {
+            history.push(final_time());
+        }
     });
-
+    let container_style = format!("{} rounded-xl p-2", theme.background);
     rsx! {
         div {
-            class: "{theme.accent_background} grid grid-cols-1 grid-rows-10 flex-grow p-2 row-span-8 gap-2",
-            Timer { 
-                class: "{theme.background} row-span-9 rounded-xl",
-                final_time 
-            }
+            class: "w-screen {theme.accent_background} grid grid-cols-4 grid-rows-11 h-screen gap-2 flex flex-col p-2",
             div {
-                class: "{theme.background} flex row-span-1 gap-2 place-content-center rounded-xl",
-                for t in history().iter() {
+                class: "col-span-4 row-span-1 {container_style}",
+                "scramble"
+            },
+            Timer { 
+                class: "{container_style} row-span-9 col-span-3",
+                final_time 
+            },
+            div {
+                class: "flex flex-col row-span-1 gap-2 place-content-center row-span-9 overflow-auto {container_style}",
+                for t in history.iter() {
                     span {
-                        "{t.display()}"
+                        "{t.display().unwrap()}"
                     }
                 }
-            }
+            },
+            div {
+                class: "col-span-4 row-span-1 {container_style}",
+                "Test"
+            },
         }
     }
 }
