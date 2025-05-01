@@ -240,15 +240,6 @@
   .w-20 {
     width: calc(var(--spacing) * 20);
   }
-  .w-23 {
-    width: calc(var(--spacing) * 23);
-  }
-  .w-25 {
-    width: calc(var(--spacing) * 25);
-  }
-  .w-29 {
-    width: calc(var(--spacing) * 29);
-  }
   .w-50 {
     width: calc(var(--spacing) * 50);
   }
@@ -309,6 +300,9 @@
   .justify-center {
     justify-content: center;
   }
+  .justify-end {
+    justify-content: flex-end;
+  }
   .justify-start {
     justify-content: flex-start;
   }
@@ -323,9 +317,6 @@
   }
   .place-self-center {
     place-self: center;
-  }
-  .self-center {
-    align-self: center;
   }
   .overflow-auto {
     overflow: auto;
@@ -372,6 +363,15 @@
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
+  }
+  .pt-1 {
+    padding-top: calc(var(--spacing) * 1);
+  }
+  .pt-2 {
+    padding-top: calc(var(--spacing) * 2);
+  }
+  .pr-2 {
+    padding-right: calc(var(--spacing) * 2);
   }
   .text-center {
     text-align: center;
@@ -447,61 +447,6 @@
       }
     }
   }
-  .max-\[100rem\]\:w-2 {
-    @media (width < 100rem) {
-      width: calc(var(--spacing) * 2);
-    }
-  }
-  .max-\[100rem\]\:w-10 {
-    @media (width < 100rem) {
-      width: calc(var(--spacing) * 10);
-    }
-  }
-  .max-\[100rem\]\:w-20 {
-    @media (width < 100rem) {
-      width: calc(var(--spacing) * 20);
-    }
-  }
-  .max-\[100rem\]\:w-25 {
-    @media (width < 100rem) {
-      width: calc(var(--spacing) * 25);
-    }
-  }
-  .max-\[85rem\]\:w-20 {
-    @media (width < 85rem) {
-      width: calc(var(--spacing) * 20);
-    }
-  }
-  .max-\[80rem\]\:w-20 {
-    @media (width < 80rem) {
-      width: calc(var(--spacing) * 20);
-    }
-  }
-  .max-\[60rem\]\:w-20 {
-    @media (width < 60rem) {
-      width: calc(var(--spacing) * 20);
-    }
-  }
-  .max-\[60rem\]\:w-29 {
-    @media (width < 60rem) {
-      width: calc(var(--spacing) * 29);
-    }
-  }
-  .sm\:w-29 {
-    @media (width >= 40rem) {
-      width: calc(var(--spacing) * 29);
-    }
-  }
-  .sm\:rounded-lg {
-    @media (width >= 40rem) {
-      border-radius: var(--radius-lg);
-    }
-  }
-  .min-\[60rem\]\:w-29 {
-    @media (width >= 60rem) {
-      width: calc(var(--spacing) * 29);
-    }
-  }
   .lg\:col-span-1 {
     @media (width >= 64rem) {
       grid-column: span 1 / span 1;
@@ -564,11 +509,6 @@
   }
   .min-\[120rem\]\:w-29 {
     @media (width >= 120rem) {
-      width: calc(var(--spacing) * 29);
-    }
-  }
-  .min-\[rem\]\:w-29 {
-    @media (width >= rem) {
       width: calc(var(--spacing) * 29);
     }
   }

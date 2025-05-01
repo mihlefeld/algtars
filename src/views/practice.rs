@@ -1,8 +1,12 @@
-use crate::components;
+use crate::components::{self, ALink};
 use crate::views::{get_selection_data, SelectionDataJson};
+use crate::Route;
+use crate::views::Train;
+use dioxus::{CapturedError, Ok};
 use dioxus::{logger::tracing, prelude::*};
 use dioxus_radio::prelude::*;
-use dioxus_sdk::storage::{get_from_storage, new_synced_storage, LocalStorage, StorageBacking};
+use dioxus_sdk::storage::{get_from_storage, new_synced_storage, LocalStorage};
+use core::fmt;
 use std::collections::BTreeMap;
 use wasm_bindgen::JsValue;
 use web_sys::{js_sys::Array, Blob, BlobPropertyBag, Url};
@@ -52,7 +56,7 @@ pub fn Case(group: String, url: String, case_id: i32) -> Element {
 }
 
 #[derive(PartialEq, Props, Clone)]
-struct GroupProps {
+pub struct GroupProps {
     name: ReadOnlySignal<String>,
     urls: ReadOnlySignal<Vec<String>>,
     case_ids: ReadOnlySignal<Vec<i32>>,
@@ -130,7 +134,48 @@ pub fn Group(props: GroupProps) -> Element {
 }
 
 #[component]
-pub fn Selection(trainer: String) -> Element {
+pub fn Selection(groups: ReadOnlySignal<Vec<GroupProps>>) -> Element {
+    rsx! {
+        div {
+            class: "flex flex-col w-fit gap-1 place-self-center",
+            for group in groups.read().iter() {
+                Group {
+                    name: group.name,
+                    urls: group.urls,
+                    case_ids: group.case_ids,
+                }
+            }
+        }
+    }
+}
+
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+pub enum PracticeMode {
+    Recap,
+    Train,
+    Select,
+}
+
+impl std::str::FromStr for PracticeMode {
+    type Err = CapturedError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "recap" => Ok(PracticeMode::Recap),
+            "train" => Ok(PracticeMode::Train),
+            "select" => Ok(PracticeMode::Select),
+            _ => Err(CapturedError::from_str("No such mode").unwrap())
+        }
+    }
+}
+
+impl std::fmt::Display for PracticeMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+#[component]
+pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element {
     // use local storage to persist the case selections TODO: make Case Selections a struct
     let mut persistent_selection = use_context_provider(|| {
         let key = trainer.clone() + "-selection";
@@ -232,16 +277,28 @@ pub fn Selection(trainer: String) -> Element {
 
     rsx! {
         div {
-            class: "flex flex-col w-fit gap-1 place-self-center",
-            for group in groups {
-                Group {
-                    name: group.name,
-                    urls: group.urls,
-                    case_ids: group.case_ids,
-                }
+            class: "flex flex-col w-screen",
+            div {
+                class: "flex flex-row gap-1 pt-2 pr-2 justify-end",
+                ALink { 
+                    to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Train },
+                    name: "Train",
+                },
+                ALink { 
+                    to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Select },
+                    name: "Select",
+                },
+                ALink { 
+                    to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Recap },
+                    name: "Recap",
+                }, 
+            },
+            if mode == PracticeMode::Select {
+                Selection { groups }
+            } else {
+                Train {}
             }
         }
-
     }
 }
 
@@ -249,7 +306,15 @@ pub fn Selection(trainer: String) -> Element {
 pub fn SelectionRoute(trainer: ReadOnlySignal<String>) -> Element {
     rsx! {
         for i in std::iter::once(trainer) {
-            Selection { trainer: trainer, key: "{i}" }
+            Practice { trainer: trainer, key: "{i}", mode: ReadOnlySignal::new(Signal::new(PracticeMode::Select)) }
+        }
+    }
+}
+#[component]
+pub fn SelectionRouteWithMode(trainer: ReadOnlySignal<String>, mode: ReadOnlySignal<PracticeMode>) -> Element {
+    rsx! {
+        for i in std::iter::once(trainer) {
+            Practice { trainer: trainer, key: "{i}", mode }
         }
     }
 }

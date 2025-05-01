@@ -9,13 +9,13 @@
 //! a common wrapper around all child routes.
 
 mod train;
-pub use train::Practice;
+pub use train::Train;
 
 mod navbar;
 pub use navbar::Navbar;
 
 mod practice;
-pub use practice::SelectionRoute;
+pub use practice::{SelectionRoute, SelectionRouteWithMode, PracticeMode};
 
 mod link_tree;
 pub use link_tree::LinkTree;

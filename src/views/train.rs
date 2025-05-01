@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 
 /// The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]
-pub fn Practice() -> Element {
+pub fn Train() -> Element {
     let theme = use_context::<Theme>();
     let final_time = use_signal(|| DisplayTime::new());
     let mut history = use_signal(|| Vec::<DisplayTime>::new());
