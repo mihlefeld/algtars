@@ -9,4 +9,4 @@ mod theme;
 pub use theme::Theme;
 
 mod link;
-pub use link::ALink;
+pub use link::{ALink, TextLink};

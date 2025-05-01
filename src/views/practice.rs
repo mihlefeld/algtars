@@ -1,4 +1,4 @@
-use crate::components::{self, ALink};
+use crate::components::{self, ALink, TextLink};
 use crate::views::{get_selection_data, SelectionDataJson};
 use crate::Route;
 use crate::views::Train;
@@ -37,7 +37,7 @@ pub fn Case(group: String, url: String, case_id: i32) -> Element {
         use_memo(move || theme.selected_style(*radio.read().selections.get(&case_id).unwrap()));
     rsx! {
         div {
-            class: "w-20 min-[120rem]:w-29 rounded-lg cursor-pointer p-1 {bg_hover}",
+            class: "w-22 min-[33rem]:w-28 rounded-lg cursor-pointer p-1 {bg_hover}",
             onclick: {
                 move |_| {
                     radio.write().selections.entry(case_id).and_modify(|value| *value = !*value).or_insert(false);
@@ -65,8 +65,9 @@ pub struct GroupProps {
 #[component]
 pub fn Group(props: GroupProps) -> Element {
     let mut persistent = use_context::<Signal<BTreeMap<i32, bool>>>();
-    let large_bp = 6usize;
     let small_bp = 4usize;
+    let medium_bp = 6usize;
+    let large_bp = 8usize;
     let name = props.name;
     let urls = props.urls;
     let case_ids = props.case_ids;
@@ -94,13 +95,14 @@ pub fn Group(props: GroupProps) -> Element {
     let grid_cols = format!(
         "{} {} {}",
         col_format("grid-cols", small_bp),
-        col_format("md:grid-cols", large_bp),
-        col_format("lg:grid-cols", large_bp)
+        col_format("min-[47rem]:grid-cols", medium_bp),
+        col_format("min-[60rem]:grid-cols", large_bp)
     );
     let col_span = format!(
-        "{} {}",
+        "{} {} {}",
         col_format("col-span", small_bp),
-        col_format("lg:col-span", large_bp)
+        col_format("min-[47rem]:col-span", medium_bp),
+        col_format("min-[60rem]:col-span", large_bp),
     );
     rsx! {
         div {
@@ -155,6 +157,7 @@ pub enum PracticeMode {
     Train,
     Select,
 }
+
 
 impl std::str::FromStr for PracticeMode {
     type Err = CapturedError;
@@ -277,25 +280,27 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
 
     rsx! {
         div {
-            class: "flex flex-col w-screen",
-            div {
-                class: "flex flex-row gap-1 pt-2 pr-2 justify-end",
+            class: "flex flex-col w-screen gap-1 place-items-center",
+            if mode == PracticeMode::Select {
                 ALink { 
                     to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Train },
-                    name: "Train",
+                    name: ">",
+                    style: "w-10 fixed right-2 bottom-2"
                 },
-                ALink { 
-                    to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Select },
-                    name: "Select",
-                },
-                ALink { 
-                    to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Recap },
-                    name: "Recap",
-                }, 
-            },
-            if mode == PracticeMode::Select {
+                div { 
+                    class: "black text-2xl",
+                    h1 {
+                        "{trainer}"
+                    },
+                    TextLink { to: Route::LinkTree {  }, name: "Back" }
+                 },
                 Selection { groups }
             } else {
+                ALink { 
+                    to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Select },
+                    name: "<",
+                    style: "w-10 fixed right-2 bottom-2"
+                },
                 Train {}
             }
         }

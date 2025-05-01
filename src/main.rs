@@ -55,6 +55,8 @@ fn App() -> Element {
         accent_background: "bg-[var(--background-darker)]".to_string(),
         primary: "bg-[var(--primary)]".to_string(),
         primary_hover: "hover:bg-[var(--primary-hover)]".to_string(),
+        primary_text: "text-[var(--primary)]".to_string(),
+        primary_text_hover: "hover:text-[var(--primary-hover)]".to_string(),
         secondary: "bg-[var(--secondary)]".to_string(),
         secondary_hover: "hover:bg-[var(--secondary-hover)]".to_string(),
         accent: "bg-[var(--accent)]".to_string(),
