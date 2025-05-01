@@ -139,7 +139,7 @@ pub fn Group(props: GroupProps) -> Element {
 pub fn Selection(groups: ReadOnlySignal<Vec<GroupProps>>) -> Element {
     rsx! {
         div {
-            class: "flex flex-col w-fit gap-1 place-self-center",
+            class: "flex flex-col w-fit gap-1 place-self-center pb-40",
             for group in groups.read().iter() {
                 Group {
                     name: group.name,

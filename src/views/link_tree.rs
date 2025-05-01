@@ -21,7 +21,7 @@ pub fn LinkTree(onclick: Option<EventHandler<MouseEvent>>) -> Element {
     let _theme = use_context::<Theme>();
     rsx! {
         div {
-            class: "flex flex-col gap-1",
+            class: "flex flex-col gap-1 pb-20 h-fit",
             for trainer in TRAINERS {
                 div { 
                     class: "flex w-fit",
