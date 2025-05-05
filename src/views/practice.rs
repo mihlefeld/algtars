@@ -1,4 +1,4 @@
-use crate::components::{self, ALink, TextLink};
+use crate::components::{self, ALink, TextLink, Timer, TimerChannel};
 use crate::views::{get_selection_data, SelectionDataJson};
 use crate::Route;
 use crate::views::Train;
@@ -8,7 +8,6 @@ use dioxus_radio::prelude::*;
 use dioxus_sdk::storage::{get_from_storage, new_synced_storage, LocalStorage};
 use core::fmt;
 use std::collections::{BTreeMap, HashMap};
-use std::thread::current;
 use wasm_bindgen::JsValue;
 use web_sys::{js_sys::Array, Blob, BlobPropertyBag, Url};
 
@@ -29,7 +28,7 @@ impl RadioChannel<SelectionData> for SelectionDataChannel {}
 
 #[component]
 pub fn Case(group: String, url: String, case_id: i32) -> Element {
-    let mut persistent = use_context::<Signal<BTreeMap<i32, bool>>>();
+    let mut persistent_selection = use_context::<Signal<BTreeMap<i32, bool>>>();
     let mut radio = use_radio::<SelectionData, SelectionDataChannel>(
         SelectionDataChannel::SelectionChanged(case_id),
     );
@@ -42,7 +41,7 @@ pub fn Case(group: String, url: String, case_id: i32) -> Element {
             onclick: {
                 move |_| {
                     radio.write().selections.entry(case_id).and_modify(|value| *value = !*value).or_insert(false);
-                    persistent.write().entry(case_id).and_modify(|value| *value = !*value).or_insert(false);
+                    persistent_selection.write().entry(case_id).and_modify(|value| *value = !*value).or_insert(false);
                     radio.write_channel(SelectionDataChannel::GroupSelectionChanged(group.clone()));
                     radio.write_channel(SelectionDataChannel::All);
                 }
@@ -65,7 +64,7 @@ pub struct GroupProps {
 
 #[component]
 pub fn Group(props: GroupProps) -> Element {
-    let mut persistent = use_context::<Signal<BTreeMap<i32, bool>>>();
+    let mut persistent_selection = use_context::<Signal<BTreeMap<i32, bool>>>();
     let small_bp = 4usize;
     let medium_bp = 6usize;
     let large_bp = 8usize;
@@ -113,7 +112,7 @@ pub fn Group(props: GroupProps) -> Element {
                     move |_| {
                         for i in case_ids.read().iter() {
                             radio.write_channel(SelectionDataChannel::SelectionChanged(*i)).selections.entry(*i).and_modify(|s| *s = !group_selected()).or_insert(!group_selected());
-                            persistent.write().entry(*i).and_modify(|s| *s = !group_selected()).or_insert(!group_selected());
+                            persistent_selection.write().entry(*i).and_modify(|s| *s = !group_selected()).or_insert(!group_selected());
                         }
                         radio.write();
                         radio.write_channel(SelectionDataChannel::All);
@@ -195,8 +194,10 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
 
     // initialize a radio station for fin grained reactivity in global state 
     use_init_radio_station::<SelectionData, SelectionDataChannel>(SelectionData::default);
+    use_init_radio_station::<(), TimerChannel>(|| ());
     let mut init_radio = use_radio(SelectionDataChannel::InitSelection);
-    let mut radio = use_radio(SelectionDataChannel::All);
+    let radio = use_radio(SelectionDataChannel::All);
+    let timer_radio = use_radio(TimerChannel::Stopped);
 
     // initialize the groups and blob urls
     // blob urls are urls to the svg images used in <img> tag
@@ -283,9 +284,11 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
         (groups, blob_urls, scrambles)
     });
 
+
     let current_scramble = use_memo(move || {
         //if mode != PracticeMode::Select {
             // let rng = rand::SmallRng::
+            timer_radio.read();
             let selected_cases = 
                 radio.read()
                 .selections.iter()
@@ -323,14 +326,17 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
                     name: ">",
                     style: "w-10 fixed right-2 bottom-2"
                 },
-                div { 
-                    class: "black text-2xl",
-                    h1 {
-                        "{trainer}"
+                div {
+                    class: "flex flex-col gap-4",
+                    div { 
+                        class: "font-[900] text-5xl flex gap-4",
+                        h1 {
+                            "{trainer} Trainer |"
+                        },
+                        TextLink { to: Route::LandingPage {  }, name: "Back", style: "decoration-[0.25rem]"}
                     },
-                    TextLink { to: Route::LandingPage {  }, name: "Back" }
-                 },
-                Selection { groups }
+                    Selection { groups }
+                }
             } else {
                 ALink { 
                     to: Route::SelectionRouteWithMode { trainer: trainer.clone(), mode: PracticeMode::Select },

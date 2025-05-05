@@ -3,7 +3,7 @@
 //! component  to be used in our app.
 
 mod timer;
-pub use timer::{DisplayTime, Timer};
+pub use timer::{DisplayTime, Timer, TimerChannel};
 
 mod theme;
 pub use theme::Theme;

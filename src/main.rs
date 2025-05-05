@@ -32,6 +32,12 @@ enum Route {
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.
 // The macro returns an `Asset` type that will display as the path to the asset in the browser or a local path in desktop bundles.
 const FAVICON: Asset = asset!("/assets/favicon.ico");
+const TITILLIUM_WEB_BLACK: Asset = asset!("/assets/Titillium_Web/TitilliumWeb-Black.ttf");
+const TITILLIUM_WEB_BOLD: Asset = asset!("/assets/Titillium_Web/TitilliumWeb-Bold.ttf");
+const TITILLIUM_WEB_EXTRALIGHT: Asset = asset!("/assets/Titillium_Web/TitilliumWeb-ExtraLight.ttf");
+const TITILLIUM_WEB_LIGHT: Asset = asset!("/assets/Titillium_Web/TitilliumWeb-Light.ttf");
+const TITILLIUM_WEB_REGULAR: Asset = asset!("/assets/Titillium_Web/TitilliumWeb-Regular.ttf");
+const TITILLIUM_WEB_SEMIBOLD: Asset = asset!("/assets/Titillium_Web/TitilliumWeb-SemiBold.ttf");
 // The asset macro also minifies some assets like CSS and JS to make bundled smaller
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
@@ -67,6 +73,38 @@ fn App() -> Element {
     });
     let theme = use_context::<components::Theme>();
     let dark = if theme.dark {"dark".to_string()} else {"".to_string()};
+
+    let style = format!("
+@font-face {{
+    font-family: 'Titillium Web';
+    font-weight: 1 1000;
+    src: url({})
+}}
+@font-face {{
+    font-family: 'Titillium Web';
+    font-weight: 900 100;
+    src: url({})
+}}
+@font-face {{
+    font-family: 'Titillium Web';
+    font-weight: 700 900;
+    src: url({})
+}}
+@font-face {{
+    font-family: 'Titillium Web';
+    font-weight: 500 700;
+    src: url({})
+}}
+@font-face {{
+    font-family: 'Titillium Web';
+    font-weight: 300 400;
+    src: url({})
+}}
+@font-face {{
+    font-family: 'Titillium Web';
+    font-weight: 200 300;
+    src: url({})
+}}", TITILLIUM_WEB_REGULAR, TITILLIUM_WEB_BLACK, TITILLIUM_WEB_BOLD, TITILLIUM_WEB_SEMIBOLD, TITILLIUM_WEB_LIGHT, TITILLIUM_WEB_EXTRALIGHT);
     
     // The `rsx!` macro lets us define HTML inside of rust. It expands to an Element with all of our HTML inside.
     rsx! {
@@ -75,6 +113,13 @@ fn App() -> Element {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS }
         document::Link { rel: "stylesheet", href: TAILWIND_CSS }
+        document::Link { href: TITILLIUM_WEB_BLACK }
+        document::Link { href: TITILLIUM_WEB_BOLD }
+        document::Link { href: TITILLIUM_WEB_EXTRALIGHT }
+        document::Link { href: TITILLIUM_WEB_LIGHT }
+        document::Link { href: TITILLIUM_WEB_REGULAR }
+        document::Link { href: TITILLIUM_WEB_SEMIBOLD }
+        style { "{style}" }
 
         // The router component renders the route enum we defined above. It will handle synchronization of the URL and render
         // the layouts and components for the active route.

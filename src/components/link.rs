@@ -21,7 +21,7 @@ pub fn TextLink(to: Route, name: &'static str, style: Option<String>) -> Element
     let theme = use_context::<Theme>();
     rsx! {
         Link {
-            class: "{style} font-bold {theme.text_link()}",
+            class: "{style} {theme.text_link()}",
             to: to,
             "{name}"
         }

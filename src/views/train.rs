@@ -1,4 +1,5 @@
-use crate::components::{Timer, Theme, DisplayTime};
+use crate::components::{DisplayTime, TextLink, Theme, Timer};
+use crate::Route;
 use dioxus::prelude::*;
 
 
@@ -16,25 +17,36 @@ pub fn Train(scramble: String, case: Signal<i32>) -> Element {
     let container_style = format!("{} rounded-xl p-2", theme.background);
     rsx! {
         div {
-            class: "w-screen {theme.accent_background} grid grid-cols-4 grid-rows-11 h-screen gap-2 flex flex-col p-2",
+            class: "w-screen {theme.accent_background} flex flex-col h-screen gap-2 flex flex-col p-2",
+            p {
+                class: "pl-10 text-4xl min-h-fit text-center font-black {container_style}",
+                TextLink { to: Route::LandingPage {}, name: "Train", style: "font-black"},
+                " 12 Cases"
+            },
             div {
-                class: "pl-10 col-span-4 row-span-1 {container_style}",
+                class: "pl-10 text-4xl min-h-fit {container_style}",
                 "{scramble}"
             },
-            Timer { 
-                class: "{container_style} row-span-9 col-span-3",
-                final_time 
-            },
             div {
-                class: "flex flex-col row-span-1 gap-2 place-content-center row-span-9 overflow-auto {container_style}",
-                for t in history.iter() {
-                    span {
-                        "{t.display().unwrap()}"
+                class: "flex gap-2 grow-1 overflow-hidden",
+                Timer { 
+                    class: "{container_style} text-7xl w-[70%]",
+                    final_time 
+                },
+                div {
+                    class: "flex flex-col gap-2 overflow-scroll w-[30%] {container_style}",
+                    div {
+                        class: "flex flex-col",
+                        for t in history.iter() {
+                            span {
+                                "{t.display().unwrap()}"
+                            }
+                        }
                     }
-                }
-            },
+                },
+            }
             div {
-                class: "col-span-4 row-span-1 {container_style}",
+                class: " {container_style}",
                 "Test"
             },
         }

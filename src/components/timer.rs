@@ -1,8 +1,18 @@
 use std::time::Duration;
 
 use dioxus::{logger::tracing, prelude::*};
+use dioxus_radio::prelude::*;
 use dioxus_sdk::utils::timing::use_interval;
 use super::Theme;
+
+
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub enum TimerChannel {
+    Stopped,
+}
+
+impl RadioChannel<()> for TimerChannel {}
+
 
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Hash, Default, Debug)]
 pub struct DisplayTime {
@@ -43,6 +53,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>)
     let mut timer_time = use_signal(|| DisplayTime::new());
     let mut start_time = use_signal(|| 0i64);
     let mut running = use_signal(|| false);
+    let mut radio = use_radio(TimerChannel::Stopped);
     use_interval(Duration::from_millis(10), {
         move || match running() {
             true => timer_time.set(DisplayTime {
@@ -65,6 +76,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>)
                     timer_time.set(done_time);
                     final_time.set(done_time);
                     running.set(false);
+                    radio.write();
                 }
                 false => {
                     start_time.set(chrono::Utc::now().timestamp_millis());
@@ -90,7 +102,7 @@ pub fn Timer(mut final_time: Signal<DisplayTime>, class: ReadOnlySignal<String>)
                 _ => ()
             },
             p {
-                class: "text-4xl",
+                class: "text-8xl font-black",
                 "{timer_string}"
             }
         }
