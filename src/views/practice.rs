@@ -7,7 +7,8 @@ use dioxus::{logger::tracing, prelude::*};
 use dioxus_radio::prelude::*;
 use dioxus_sdk::storage::{get_from_storage, new_synced_storage, LocalStorage};
 use core::fmt;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
+use std::thread::current;
 use wasm_bindgen::JsValue;
 use web_sys::{js_sys::Array, Blob, BlobPropertyBag, Url};
 
@@ -177,6 +178,11 @@ impl std::fmt::Display for PracticeMode {
     }
 }
 
+fn get_random(min: usize, max: usize) -> usize {
+    let rand = web_sys::js_sys::Math::random();
+    (rand * (max - min) as f64).round() as usize + min
+}
+
 #[component]
 pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element {
     // use local storage to persist the case selections TODO: make Case Selections a struct
@@ -189,12 +195,12 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
 
     // initialize a radio station for fin grained reactivity in global state 
     use_init_radio_station::<SelectionData, SelectionDataChannel>(SelectionData::default);
-    let mut radio =
-        use_radio::<SelectionData, SelectionDataChannel>(SelectionDataChannel::InitSelection);
+    let mut init_radio = use_radio(SelectionDataChannel::InitSelection);
+    let mut radio = use_radio(SelectionDataChannel::All);
 
     // initialize the groups and blob urls
     // blob urls are urls to the svg images used in <img> tag
-    let (groups, blob_urls) = use_hook(|| {
+    let (groups, blob_urls, scrambles) = use_hook(|| {
 
         // first retrieve the json fiels for the current alg trainer
         let SelectionDataJson {
@@ -202,7 +208,7 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
             _algsets: _,
             images,
             groups,
-            _scrambles: _,
+            _scrambles,
         } = get_selection_data(trainer.as_str()).unwrap();
 
         // create blob urls from the svg images in compined.json
@@ -225,6 +231,12 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
                     (k.clone(), url)
                 })
                 .collect();
+        
+        // load scrambles
+        let scrambles = serde_json::from_str::<HashMap<String, Vec<String>>>(_scrambles.as_str())
+            .unwrap_or_else(|_| {tracing::error!("failed to load scrambles"); HashMap::new()});
+
+        tracing::debug!("LOADED SCRAMBLES {}", scrambles.len());
 
         // initialize vector of group props from groups_info.json and persistent storage
         // insert case selections into radio
@@ -254,7 +266,7 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
                         .write()
                         .entry(*case_id)
                         .or_insert(false).clone();
-                    radio
+                    init_radio
                         .write_channel(SelectionDataChannel::SelectionChanged(*case_id))
                         .selections
                         .insert(*case_id, value);
@@ -268,7 +280,31 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
                 }
             })
             .collect::<Vec<GroupProps>>();
-        (groups, blob_urls)
+        (groups, blob_urls, scrambles)
+    });
+
+    let current_scramble = use_memo(move || {
+        //if mode != PracticeMode::Select {
+            // let rng = rand::SmallRng::
+            let selected_cases = 
+                radio.read()
+                .selections.iter()
+                .filter(|(_, selected)| **selected)
+                .map(|(case_id, _)| *case_id)
+                .collect::<Vec::<i32>>();
+            if selected_cases.len() == 0 {
+                return "".to_string();
+            }
+            let element_id = get_random(0, selected_cases.len()-1);
+            let random_case = selected_cases[element_id];
+            let case_scrambles = scrambles.get(&random_case.to_string()).cloned().unwrap_or_else(|| {tracing::error!("No scrambles found"); vec![]});
+            if case_scrambles.len() == 0 {
+                return  "".to_string();
+            }
+            let random_scramble = case_scrambles[get_random(0, case_scrambles.len())].clone();
+            // std::r
+            random_scramble
+        //}
     });
 
     // clean up the blob urls if a different alg trainer is chosen
@@ -301,7 +337,10 @@ pub fn Practice(trainer: String, mode: ReadOnlySignal<PracticeMode>) -> Element 
                     name: "<",
                     style: "w-10 fixed right-2 bottom-2"
                 },
-                Train {}
+                Train {
+                    scramble: current_scramble, 
+                    case: Signal::new(2i32)
+                }
             }
         }
     }

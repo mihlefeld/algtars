@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 
 /// The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]
-pub fn Train() -> Element {
+pub fn Train(scramble: String, case: Signal<i32>) -> Element {
     let theme = use_context::<Theme>();
     let final_time = use_signal(|| DisplayTime::new());
     let mut history = use_signal(|| Vec::<DisplayTime>::new());
@@ -18,8 +18,8 @@ pub fn Train() -> Element {
         div {
             class: "w-screen {theme.accent_background} grid grid-cols-4 grid-rows-11 h-screen gap-2 flex flex-col p-2",
             div {
-                class: "col-span-4 row-span-1 {container_style}",
-                "scramble"
+                class: "pl-10 col-span-4 row-span-1 {container_style}",
+                "{scramble}"
             },
             Timer { 
                 class: "{container_style} row-span-9 col-span-3",

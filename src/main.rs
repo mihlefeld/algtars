@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 // The dioxus prelude contains a ton of common items used in dioxus apps. It's a good idea to import wherever you
 // need dioxus
 use dioxus::{logger::tracing, prelude::*};
